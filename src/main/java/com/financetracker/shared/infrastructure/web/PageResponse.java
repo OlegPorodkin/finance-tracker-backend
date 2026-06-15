@@ -1,5 +1,6 @@
 package com.financetracker.shared.infrastructure.web;
 
+import com.financetracker.shared.domain.PagedResult;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -18,6 +19,16 @@ public record PageResponse<T>(
                 page.getSize(),
                 page.getTotalElements(),
                 page.getTotalPages()
+        );
+    }
+
+    public static <T> PageResponse<T> from(PagedResult<T> result) {
+        return new PageResponse<>(
+                result.content(),
+                result.page(),
+                result.size(),
+                result.totalElements(),
+                result.totalPages()
         );
     }
 }
