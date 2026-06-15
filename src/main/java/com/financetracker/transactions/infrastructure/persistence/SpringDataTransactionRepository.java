@@ -17,10 +17,13 @@ public interface SpringDataTransactionRepository
 
     Optional<TransactionJpaEntity> findByIdAndUserId(UUID id, UUID userId);
 
-    @Query("SELECT t FROM TransactionJpaEntity t WHERE t.userId = :userId" +
-           " AND (:from IS NULL OR t.date >= :from)" +
-           " AND (:to IS NULL OR t.date <= :to)" +
-           " ORDER BY t.date DESC")
+    @Query(value = """
+            SELECT * FROM transactions
+            WHERE user_id = :userId
+              AND (CAST(:from AS DATE) IS NULL OR date >= CAST(:from AS DATE))
+              AND (CAST(:to AS DATE) IS NULL OR date <= CAST(:to AS DATE))
+            ORDER BY date DESC
+            """, nativeQuery = true)
     List<TransactionJpaEntity> findAllForExport(@Param("userId") UUID userId,
                                                 @Param("from") LocalDate from,
                                                 @Param("to") LocalDate to);
