@@ -19,6 +19,17 @@ app:
     allowed-origin: ${CORS_ALLOWED_ORIGIN:http://localhost:5173}
   jwt:
     secret: ${JWT_SECRET}
+  rate-limit:
+    enabled: true
+    login:
+      capacity: 5
+      refill-minutes: 1
+    register:
+      capacity: 5
+      refill-minutes: 60
+    refresh:
+      capacity: 30
+      refill-minutes: 1
 
 server:
   forward-headers-strategy: native

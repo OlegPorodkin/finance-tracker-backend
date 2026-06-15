@@ -19,6 +19,7 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.HexFormat;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class JwtTokenServiceAdapter implements TokenService {
@@ -48,6 +49,7 @@ public class JwtTokenServiceAdapter implements TokenService {
     @Override
     public String generateRefreshToken(UserId userId) {
         return Jwts.builder()
+                .id(UUID.randomUUID().toString())
                 .subject(userId.toString())
                 .claim("type", "refresh")
                 .issuedAt(Date.from(Instant.now()))

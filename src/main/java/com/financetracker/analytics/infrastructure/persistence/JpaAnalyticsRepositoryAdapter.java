@@ -27,8 +27,8 @@ public class JpaAnalyticsRepositoryAdapter implements AnalyticsRepository {
                         FROM transactions
                         WHERE user_id = :userId
                           AND type = :type
-                          AND (:from IS NULL OR date >= :from)
-                          AND (:to   IS NULL OR date <= :to)
+                          AND (CAST(:from AS DATE) IS NULL OR date >= CAST(:from AS DATE))
+                          AND (CAST(:to   AS DATE) IS NULL OR date <= CAST(:to   AS DATE))
                         """)
                 .setParameter("userId", userId.value())
                 .setParameter("type", type.name())
@@ -50,8 +50,8 @@ public class JpaAnalyticsRepositoryAdapter implements AnalyticsRepository {
                         LEFT JOIN categories c ON t.category_id = c.id
                         WHERE t.user_id = :userId
                           AND t.type = :type
-                          AND (:from IS NULL OR t.date >= :from)
-                          AND (:to   IS NULL OR t.date <= :to)
+                          AND (CAST(:from AS DATE) IS NULL OR t.date >= CAST(:from AS DATE))
+                          AND (CAST(:to   AS DATE) IS NULL OR t.date <= CAST(:to   AS DATE))
                         GROUP BY t.category_id, c.name
                         ORDER BY SUM(t.amount_in_cents) DESC
                         """)

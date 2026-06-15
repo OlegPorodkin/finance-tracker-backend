@@ -1,6 +1,10 @@
 JWT_SECRET: test-secret-for-integration-tests-minimum-32-chars
 CORS_ALLOWED_ORIGIN: http://localhost:5173
 
+app:
+  rate-limit:
+    enabled: false
+
 spring:
   jpa:
     hibernate:

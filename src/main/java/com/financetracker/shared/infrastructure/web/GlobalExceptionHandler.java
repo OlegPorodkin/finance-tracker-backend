@@ -1,5 +1,6 @@
 package com.financetracker.shared.infrastructure.web;
 
+import com.financetracker.shared.domain.exception.ConflictException;
 import com.financetracker.shared.domain.exception.NotFoundException;
 import com.financetracker.shared.domain.exception.UnauthorizedException;
 import com.financetracker.shared.domain.exception.ValidationException;
@@ -25,6 +26,12 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ErrorResponse handleUnauthorized(UnauthorizedException ex) {
         return ErrorResponse.of(HttpStatus.UNAUTHORIZED.value(), ex.getMessage());
+    }
+
+    @ExceptionHandler(ConflictException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleConflict(ConflictException ex) {
+        return ErrorResponse.of(HttpStatus.CONFLICT.value(), ex.getMessage());
     }
 
     @ExceptionHandler(ValidationException.class)

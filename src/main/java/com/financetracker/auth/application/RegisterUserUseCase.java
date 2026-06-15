@@ -9,7 +9,7 @@ import com.financetracker.auth.domain.TokenService;
 import com.financetracker.auth.domain.UserRepository;
 import com.financetracker.shared.domain.TransactionPort;
 import com.financetracker.shared.domain.User;
-import com.financetracker.shared.domain.exception.ValidationException;
+import com.financetracker.shared.domain.exception.ConflictException;
 import lombok.RequiredArgsConstructor;
 
 import java.time.Instant;
@@ -27,7 +27,7 @@ public class RegisterUserUseCase {
     public AuthResult execute(RegisterRequest request) {
         return transactionPort.execute(() -> {
             if (userRepository.existsByEmail(request.email())) {
-                throw new ValidationException("Email already in use");
+                throw new ConflictException("Email already in use");
             }
 
             User user = User.create(
