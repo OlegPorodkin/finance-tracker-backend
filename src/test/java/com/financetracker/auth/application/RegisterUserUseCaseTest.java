@@ -52,7 +52,7 @@ class RegisterUserUseCaseTest {
         when(tokenService.generateRefreshToken(any())).thenReturn("refresh-token");
         when(tokenService.hashToken("refresh-token")).thenReturn("refresh-hash");
 
-        AuthResult result = useCase.execute(new RegisterRequest("user@example.com", "password123", "User"));
+        AuthResult result = useCase.execute(new RegisterRequest("user@example.com", "password123", "User", "CAD"));
 
         assertThat(result.accessToken()).isEqualTo("access-token");
         assertThat(result.refreshToken()).isEqualTo("refresh-token");
@@ -65,7 +65,7 @@ class RegisterUserUseCaseTest {
         when(userRepository.existsByEmail("user@example.com")).thenReturn(true);
 
         assertThatThrownBy(() ->
-                useCase.execute(new RegisterRequest("user@example.com", "password123", "User")))
+                useCase.execute(new RegisterRequest("user@example.com", "password123", "User", "CAD")))
                 .isInstanceOf(ConflictException.class)
                 .hasMessage("Email already in use");
 
