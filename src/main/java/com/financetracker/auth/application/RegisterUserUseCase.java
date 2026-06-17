@@ -30,11 +30,12 @@ public class RegisterUserUseCase {
                 throw new ConflictException("Email already in use");
             }
 
+            String currency = (request.currency() != null) ? request.currency() : "USD";
             User user = User.create(
                     request.email(),
                     passwordHasher.hash(request.password()),
                     request.name(),
-                    "USD"
+                    currency
             );
             user = userRepository.save(user);
 
