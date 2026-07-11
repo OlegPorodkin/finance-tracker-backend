@@ -43,4 +43,21 @@ class BudgetTest {
         assertThat(budget.getLimitAmountInCents()).isEqualTo(200_00L);
         assertThat(budget.getAlertThreshold()).isEqualTo(90);
     }
+
+    @Test
+    void create_has_no_alert_sent() {
+        Budget budget = Budget.create(userId, null, 100_00L, BudgetPeriod.MONTHLY, 80);
+
+        assertThat(budget.getLastAlertSentAt()).isNull();
+    }
+
+    @Test
+    void markAlertSent_sets_last_alert_timestamp() {
+        Budget budget = Budget.create(userId, null, 100_00L, BudgetPeriod.MONTHLY, 80);
+
+        budget.markAlertSent();
+
+        assertThat(budget.getLastAlertSentAt()).isNotNull();
+        assertThat(budget.getUpdatedAt()).isAfterOrEqualTo(budget.getCreatedAt());
+    }
 }
