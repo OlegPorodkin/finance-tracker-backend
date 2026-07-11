@@ -40,7 +40,8 @@ class RefreshTokenUseCaseTest {
 
     @BeforeEach
     void setUp() {
-        useCase = new RefreshTokenUseCase(refreshTokenRepository, userRepository, tokenService, transactionPort);
+        useCase = new RefreshTokenUseCase(refreshTokenRepository, userRepository, tokenService,
+                new TokenPairIssuer(tokenService, refreshTokenRepository), transactionPort);
         when(transactionPort.execute(any(Supplier.class)))
                 .thenAnswer(inv -> inv.<Supplier<?>>getArgument(0).get());
     }
