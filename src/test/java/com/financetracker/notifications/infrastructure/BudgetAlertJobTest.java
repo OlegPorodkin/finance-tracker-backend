@@ -59,12 +59,28 @@ class BudgetAlertJobTest {
         when(budgetRepository.sumSpentInCents(eq(userId), eq(categoryId), any(), any())).thenReturn(85_00L);
         when(userProfileRepository.findById(userId)).thenReturn(Optional.of(user));
         when(categoryRepository.findById(categoryId, userId)).thenReturn(Optional.of(category("Groceries")));
+        when(notificationPort.sendBudgetAlert("user@example.com", "Groceries", 85, 100_00L, "USD")).thenReturn(true);
 
         job.checkBudgetAlerts();
 
         verify(notificationPort).sendBudgetAlert("user@example.com", "Groceries", 85, 100_00L, "USD");
         verify(budgetRepository).save(budget);
         assertThat(budget.getLastAlertSentAt()).isNotNull();
+    }
+
+    @Test
+    void does_not_mark_sent_when_notification_delivery_fails() {
+        Budget budget = Budget.create(userId, categoryId, 100_00L, BudgetPeriod.MONTHLY, 80);
+        when(budgetRepository.findAll()).thenReturn(List.of(budget));
+        when(budgetRepository.sumSpentInCents(eq(userId), eq(categoryId), any(), any())).thenReturn(85_00L);
+        when(userProfileRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(categoryRepository.findById(categoryId, userId)).thenReturn(Optional.of(category("Groceries")));
+        when(notificationPort.sendBudgetAlert("user@example.com", "Groceries", 85, 100_00L, "USD")).thenReturn(false);
+
+        job.checkBudgetAlerts();
+
+        verify(budgetRepository, never()).save(any());
+        assertThat(budget.getLastAlertSentAt()).isNull();
     }
 
     @Test
