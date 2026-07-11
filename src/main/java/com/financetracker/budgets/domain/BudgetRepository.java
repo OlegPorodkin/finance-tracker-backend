@@ -8,6 +8,8 @@ import java.util.Optional;
 
 public interface BudgetRepository {
 
+    List<Budget> findAll();
+
     List<Budget> findAllByUserId(UserId userId);
 
     Optional<Budget> findById(String id, UserId userId);

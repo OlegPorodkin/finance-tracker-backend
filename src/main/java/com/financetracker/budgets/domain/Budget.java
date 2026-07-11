@@ -20,10 +20,11 @@ public class Budget {
     private int alertThreshold;
     private final Instant createdAt;
     private Instant updatedAt;
+    private Instant lastAlertSentAt;
 
     public Budget(String id, UserId userId, String categoryId, long limitAmountInCents,
                   BudgetPeriod period, LocalDate startDate, int alertThreshold,
-                  Instant createdAt, Instant updatedAt) {
+                  Instant createdAt, Instant updatedAt, Instant lastAlertSentAt) {
         this.id = id;
         this.userId = userId;
         this.categoryId = categoryId;
@@ -33,18 +34,24 @@ public class Budget {
         this.alertThreshold = alertThreshold;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.lastAlertSentAt = lastAlertSentAt;
     }
 
     public static Budget create(UserId userId, String categoryId, long limitAmountInCents,
                                 BudgetPeriod period, int alertThreshold) {
         Instant now = Instant.now();
         return new Budget(UUID.randomUUID().toString(), userId, categoryId, limitAmountInCents,
-                period, startOfCurrentPeriod(period), alertThreshold, now, now);
+                period, startOfCurrentPeriod(period), alertThreshold, now, now, null);
     }
 
     public void update(long limitAmountInCents, int alertThreshold) {
         this.limitAmountInCents = limitAmountInCents;
         this.alertThreshold = alertThreshold;
+        this.updatedAt = Instant.now();
+    }
+
+    public void markAlertSent() {
+        this.lastAlertSentAt = Instant.now();
         this.updatedAt = Instant.now();
     }
 

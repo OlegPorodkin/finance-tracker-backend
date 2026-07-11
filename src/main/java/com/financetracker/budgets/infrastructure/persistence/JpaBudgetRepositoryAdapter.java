@@ -21,6 +21,14 @@ public class JpaBudgetRepositoryAdapter implements BudgetRepository {
     private final SpringDataBudgetRepository springDataBudgetRepository;
 
     @Override
+    public List<Budget> findAll() {
+        return springDataBudgetRepository.findAll()
+                .stream()
+                .map(BudgetJpaEntity::toBudget)
+                .toList();
+    }
+
+    @Override
     public List<Budget> findAllByUserId(UserId userId) {
         return springDataBudgetRepository.findAllByUserId(userId.value())
                 .stream()

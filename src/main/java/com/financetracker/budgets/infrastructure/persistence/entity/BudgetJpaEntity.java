@@ -53,6 +53,9 @@ public class BudgetJpaEntity {
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
+    @Column(name = "last_alert_sent_at")
+    private Instant lastAlertSentAt;
+
     public Budget toBudget() {
         return new Budget(
                 id.toString(),
@@ -63,7 +66,8 @@ public class BudgetJpaEntity {
                 startDate,
                 alertThreshold,
                 createdAt,
-                updatedAt
+                updatedAt,
+                lastAlertSentAt
         );
     }
 
@@ -77,7 +81,8 @@ public class BudgetJpaEntity {
                 budget.getStartDate(),
                 budget.getAlertThreshold(),
                 budget.getCreatedAt(),
-                budget.getUpdatedAt()
+                budget.getUpdatedAt(),
+                budget.getLastAlertSentAt()
         );
     }
 }
