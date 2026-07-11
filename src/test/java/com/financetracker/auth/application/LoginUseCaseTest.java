@@ -36,8 +36,8 @@ class LoginUseCaseTest {
 
     @BeforeEach
     void setUp() {
-        useCase = new LoginUseCase(userRepository, refreshTokenRepository,
-                tokenService, passwordHasher, transactionPort);
+        useCase = new LoginUseCase(userRepository, passwordHasher,
+                new TokenPairIssuer(tokenService, refreshTokenRepository), transactionPort);
         when(transactionPort.execute(any(Supplier.class)))
                 .thenAnswer(inv -> inv.<Supplier<?>>getArgument(0).get());
     }

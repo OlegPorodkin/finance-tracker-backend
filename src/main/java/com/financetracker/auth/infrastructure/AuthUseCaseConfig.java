@@ -4,6 +4,7 @@ import com.financetracker.auth.application.LoginUseCase;
 import com.financetracker.auth.application.LogoutUseCase;
 import com.financetracker.auth.application.RefreshTokenUseCase;
 import com.financetracker.auth.application.RegisterUserUseCase;
+import com.financetracker.auth.application.TokenPairIssuer;
 import com.financetracker.auth.domain.PasswordHasher;
 import com.financetracker.auth.domain.RefreshTokenRepository;
 import com.financetracker.auth.domain.TokenService;
@@ -16,29 +17,34 @@ import org.springframework.context.annotation.Configuration;
 public class AuthUseCaseConfig {
 
     @Bean
+    public TokenPairIssuer tokenPairIssuer(TokenService tokenService,
+                                            RefreshTokenRepository refreshTokenRepository) {
+        return new TokenPairIssuer(tokenService, refreshTokenRepository);
+    }
+
+    @Bean
     public RegisterUserUseCase registerUserUseCase(UserRepository userRepository,
-                                                    RefreshTokenRepository refreshTokenRepository,
-                                                    TokenService tokenService,
                                                     PasswordHasher passwordHasher,
+                                                    TokenPairIssuer tokenPairIssuer,
                                                     TransactionPort transactionPort) {
-        return new RegisterUserUseCase(userRepository, refreshTokenRepository, tokenService, passwordHasher, transactionPort);
+        return new RegisterUserUseCase(userRepository, passwordHasher, tokenPairIssuer, transactionPort);
     }
 
     @Bean
     public LoginUseCase loginUseCase(UserRepository userRepository,
-                                      RefreshTokenRepository refreshTokenRepository,
-                                      TokenService tokenService,
                                       PasswordHasher passwordHasher,
+                                      TokenPairIssuer tokenPairIssuer,
                                       TransactionPort transactionPort) {
-        return new LoginUseCase(userRepository, refreshTokenRepository, tokenService, passwordHasher, transactionPort);
+        return new LoginUseCase(userRepository, passwordHasher, tokenPairIssuer, transactionPort);
     }
 
     @Bean
     public RefreshTokenUseCase refreshTokenUseCase(RefreshTokenRepository refreshTokenRepository,
                                                     UserRepository userRepository,
                                                     TokenService tokenService,
+                                                    TokenPairIssuer tokenPairIssuer,
                                                     TransactionPort transactionPort) {
-        return new RefreshTokenUseCase(refreshTokenRepository, userRepository, tokenService, transactionPort);
+        return new RefreshTokenUseCase(refreshTokenRepository, userRepository, tokenService, tokenPairIssuer, transactionPort);
     }
 
     @Bean

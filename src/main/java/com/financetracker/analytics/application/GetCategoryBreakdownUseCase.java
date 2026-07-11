@@ -15,10 +15,16 @@ public class GetCategoryBreakdownUseCase {
 
     private final AnalyticsRepository analyticsRepository;
 
-    public List<CategoryBreakdownResponse> execute(UserId userId, TransactionType type,
-                                                    LocalDate from, LocalDate to) {
+    public List<CategoryBreakdownResponse> execute(UserId userId,
+                                                   TransactionType type,
+                                                   LocalDate from,
+                                                   LocalDate to) {
+
         List<CategoryAmount> amounts = analyticsRepository.sumByCategoryAndType(userId, type, from, to);
-        long total = amounts.stream().mapToLong(CategoryAmount::amountInCents).sum();
+
+        long total = amounts.stream()
+                .mapToLong(CategoryAmount::amountInCents).sum();
+
         return amounts.stream()
                 .map(a -> new CategoryBreakdownResponse(
                         a.categoryId(),

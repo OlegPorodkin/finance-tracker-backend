@@ -14,8 +14,7 @@ public class GetMonthlyTrendUseCase {
     private final AnalyticsRepository analyticsRepository;
 
     public List<MonthlyTrendResponse> execute(UserId userId, int year) {
-        return analyticsRepository.sumByMonth(userId, year)
-                .stream()
+        return analyticsRepository.sumByMonth(userId, year).stream()
                 .map(m -> new MonthlyTrendResponse(
                         m.year(),
                         m.month(),

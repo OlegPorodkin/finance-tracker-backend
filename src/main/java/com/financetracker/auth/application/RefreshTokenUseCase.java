@@ -11,15 +11,13 @@ import com.financetracker.shared.domain.exception.NotFoundException;
 import com.financetracker.shared.domain.exception.UnauthorizedException;
 import lombok.RequiredArgsConstructor;
 
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-
 @RequiredArgsConstructor
 public class RefreshTokenUseCase {
 
     private final RefreshTokenRepository refreshTokenRepository;
     private final UserRepository userRepository;
     private final TokenService tokenService;
+    private final TokenPairIssuer tokenPairIssuer;
     private final TransactionPort transactionPort;
 
     public AuthResult execute(String rawToken) {
@@ -38,15 +36,7 @@ public class RefreshTokenUseCase {
             User user = userRepository.findById(stored.getUserId())
                     .orElseThrow(() -> new NotFoundException("User not found"));
 
-            String newAccessToken = tokenService.generateAccessToken(user.getId(), user.getEmail());
-            String newRawRefresh = tokenService.generateRefreshToken(user.getId());
-            refreshTokenRepository.save(RefreshToken.create(
-                    tokenService.hashToken(newRawRefresh),
-                    user.getId(),
-                    Instant.now().plus(7, ChronoUnit.DAYS)
-            ));
-
-            return new AuthResult(user, newAccessToken, newRawRefresh);
+            return tokenPairIssuer.issueFor(user);
         });
     }
 

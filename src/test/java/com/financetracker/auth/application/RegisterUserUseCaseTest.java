@@ -36,8 +36,8 @@ class RegisterUserUseCaseTest {
 
     @BeforeEach
     void setUp() {
-        useCase = new RegisterUserUseCase(userRepository, refreshTokenRepository,
-                tokenService, passwordHasher, transactionPort);
+        useCase = new RegisterUserUseCase(userRepository, passwordHasher,
+                new TokenPairIssuer(tokenService, refreshTokenRepository), transactionPort);
         when(transactionPort.execute(any(Supplier.class)))
                 .thenAnswer(inv -> inv.<Supplier<?>>getArgument(0).get());
     }
